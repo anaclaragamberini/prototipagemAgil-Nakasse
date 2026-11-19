@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Painel de gestão de reservas de ambientes acadêmicos da UniFil."
+    />
+    <title>Dashboard do Gestor | Reservas Acadêmicas UniFil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="src/main.js" defer></script>
+  </head>
+  <body>
+    <main class="login-screen" id="loginScreen">
+      <section class="login-card" aria-labelledby="loginTitle">
+        <div class="login-brand" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+            <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17M8 13h3M8 16.5h7" />
+          </svg>
+        </div>
+        <p class="eyebrow">UniFil</p>
+        <h1 id="loginTitle">Sistema de Gestão de Reservas de Ambientes Acadêmicos</h1>
+        <p class="login-description">Entre para continuar.</p>
+
+        <form class="login-form" id="loginForm" novalidate>
+          <div class="form-field">
+            <label for="loginRole">Perfil</label>
+            <select id="loginRole" name="role" required>
+              <option value="gestor">Gestor</option>
+              <option value="professor">Professor</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="loginEmail">E-mail</label>
+            <input id="loginEmail" name="email" type="email" required autocomplete="username" />
+          </div>
+          <div class="form-field">
+            <label for="loginPassword">Senha</label>
+            <input id="loginPassword" name="password" type="password" required autocomplete="current-password" />
+          </div>
+          <p class="login-feedback inline-feedback inline-feedback--error" id="loginFeedback" role="alert" hidden></p>
+          <button class="button button--primary login-submit" type="submit">Entrar</button>
+        </form>
+        <p class="login-demo-note">Acesso demonstrativo para Gestor e Professor.</p>
+      </section>
+    </main>
+
+    <div class="app-shell" id="dashboard" hidden>
+      <header class="topbar">
+        <div class="topbar__inner">
+          <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Recolher menu lateral"
+            aria-controls="sidebar"
+            aria-expanded="true"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span>MENU</span>
+          </button>
+
+          <button class="profile-button" type="button" aria-label="Perfil do gestor">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.2" />
+              <path d="M5.5 19.2c.8-3.1 3.1-4.8 6.5-4.8s5.7 1.7 6.5 4.8" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+          <nav class="sidebar__nav" aria-label="Navegação do gestor">
+            <ul class="nav-list">
+              <li>
+                <a class="nav-link nav-link--active" href="#dashboard" data-nav="dashboard" aria-current="page">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="4" width="6" height="6" rx="1" />
+                    <rect x="14" y="4" width="6" height="6" rx="1" />
+                    <rect x="4" y="14" width="6" height="6" rx="1" />
+                    <rect x="14" y="14" width="6" height="6" rx="1" />
+                  </svg>
+                  <span class="nav-label">Dashboard</span>
+                </a>
+              </li>
+
+              <li class="nav-group">
+                <button
+                  class="nav-link nav-group__toggle"
+                  id="ambientesToggle"
+                  type="button"
+                  aria-expanded="true"
+                  aria-controls="ambientesSubmenu"
+                  data-nav-group="ambientes"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3.8 10.2 12 3.8l8.2 6.4v9.2a1 1 0 0 1-1 1h-5.1v-6.1H9.9v6.1H4.8a1 1 0 0 1-1-1z" />
+                  </svg>
+                  <span class="nav-label">Ambientes</span>
+                  <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <ul class="nav-submenu" id="ambientesSubmenu">
+                  <li><a href="#consulta-ambientes" data-nav="consulta-ambientes">Consulta ambientes</a></li>
+                  <li><a href="#cadastro-ambientes" data-nav="cadastro-ambientes">Cadastro ambientes</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-group">
+                <button
+                  class="nav-link nav-group__toggle"
+                  id="reservasToggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="reservasSubmenu"
+                  data-nav-group="reservas"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="5.5" width="16" height="15" rx="2" />
+                    <path d="M8 3.5v4M16 3.5v4M4 10h16" />
+                  </svg>
+                  <span class="nav-label">Reservas</span>
+                  <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <ul class="nav-submenu" id="reservasSubmenu" hidden>
+                  <li><a href="#gerenciamento-reservas" data-nav="gerenciamento-reservas">Gerenciamento de reservas</a></li>
+                </ul>
+              </li>
+
+              <li>
+                <div class="nav-link nav-link--static">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 3.8h8l4.5 4.5v12H6z" />
+                    <path d="M14 3.8v4.8h4.5M9 13h6M9 16.5h6" />
+                  </svg>
+                  <span class="nav-label">Relatórios</span>
+                </div>
+              </li>
+            </ul>
+
+            <ul class="nav-list nav-list--bottom">
+              <li>
+                <div class="nav-link nav-link--static">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.2" />
+                    <path d="M5.5 19.2c.8-3.1 3.1-4.8 6.5-4.8s5.7 1.7 6.5 4.8" />
+                  </svg>
+                  <span class="nav-label">Perfil</span>
+                </div>
+              </li>
+              <li>
+                <button class="nav-link nav-link--static nav-link--logout" type="button" data-logout>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10 5H5.5A1.5 1.5 0 0 0 4 6.5v11A1.5 1.5 0 0 0 5.5 19H10" />
+                    <path d="M14 8l4 4-4 4M8 12h10" />
+                  </svg>
+                  <span class="nav-label">Sair</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <button
+          class="sidebar-backdrop"
+          id="sidebarBackdrop"
+          type="button"
+          aria-label="Fechar menu lateral"
+          tabindex="-1"
+        ></button>
+
+        <main class="main-content">
+          <div class="main-content__inner">
+            <section class="view-panel" id="view-dashboard" data-view="dashboard">
+              <section class="dashboard-intro" aria-label="Resumo do dashboard">
+              <h1 class="page-title">Dashboard</h1>
+
+              <div class="date-selector" aria-label="Seletor de dias">
+                <span class="date-selector__period">Mês / Ano</span>
+                <div class="date-selector__controls">
+                  <button
+                    class="date-arrow"
+                    id="previousDay"
+                    type="button"
+                    aria-label="Selecionar dia anterior"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m15 5-7 7 7 7" />
+                    </svg>
+                  </button>
+                  <div class="date-selector__days" id="dateDays"></div>
+                  <button
+                    class="date-arrow"
+                    id="nextDay"
+                    type="button"
+                    aria-label="Selecionar próximo dia"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m9 5 7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="dashboard-intro__spacer" aria-hidden="true"></div>
+              </section>
+
+              <section class="metrics-grid" aria-label="Indicadores do sistema">
+              <article class="metric-card">
+                <div class="metric-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="3.1" />
+                    <path d="M6.2 18.5c.6-2.7 2.6-4.2 5.8-4.2s5.2 1.5 5.8 4.2" />
+                  </svg>
+                </div>
+                <div class="metric-card__content">
+                  <div class="metric-row">
+                    <span class="metric-value">10</span>
+                    <span class="metric-label">Turmas</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="metric-value">500</span>
+                    <span class="metric-label">Alunos cadastrados</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="metric-card">
+                <div class="metric-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m3.7 10.1 8.3-6.4 8.3 6.4v9.3a1 1 0 0 1-1 1h-5.2v-6.2H9.9v6.2H4.7a1 1 0 0 1-1-1z" />
+                  </svg>
+                </div>
+                <div class="metric-card__content">
+                  <div class="metric-row">
+                    <span class="metric-value">30</span>
+                    <span class="metric-label">Ambientes cadastrados</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="metric-value">25</span>
+                    <span class="metric-label">Reservas hoje</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="metric-card metric-card--single">
+                <div class="metric-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m6.5 12.2 3.6 3.6 7.5-7.5" />
+                  </svg>
+                </div>
+                <div class="metric-card__content">
+                  <div class="metric-row">
+                    <span class="metric-value metric-value--success">3</span>
+                    <span class="metric-label">Reservas aprovadas</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="metric-card metric-card--single">
+                <div class="metric-card__icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m7 7 10 10M17 7 7 17" />
+                  </svg>
+                </div>
+                <div class="metric-card__content">
+                  <div class="metric-row">
+                    <span class="metric-value metric-value--danger">1</span>
+                    <span class="metric-label">Reservas rejeitadas</span>
+                  </div>
+                </div>
+              </article>
+              </section>
+
+              <section class="chart-card" aria-labelledby="chartTitle">
+                <h2 class="chart-card__title" id="chartTitle">Ambientes mais reservados</h2>
+                <div class="chart-wrap" id="chart" role="img" aria-label="Gráfico de reservas por ambiente"></div>
+              </section>
+            </section>
+
+            <section class="view-panel management-view" id="view-consulta-ambientes" data-view="consulta-ambientes" hidden>
+              <header class="management-header">
+                <div>
+                  <p class="eyebrow">Gerenciamento</p>
+                  <h1 class="page-title">Consulta de Ambientes</h1>
+                  <p class="management-description">Consulte e mantenha os ambientes acadêmicos cadastrados.</p>
+                </div>
+                <a class="button button--primary" href="#cadastro-ambientes" data-new-environment>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                  Cadastrar ambiente
+                </a>
+              </header>
+
+              <div class="management-toolbar">
+                <label class="search-field" for="environmentSearch">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="10.8" cy="10.8" r="6.8" />
+                    <path d="m16 16 4.5 4.5" />
+                  </svg>
+                  <input id="environmentSearch" type="search" placeholder="Pesquisar por nome, tipo ou localização" autocomplete="off" />
+                </label>
+                <span class="result-count" id="environmentCount" aria-live="polite"></span>
+              </div>
+
+              <p class="inline-feedback" id="environmentFeedback" role="status" aria-live="polite" hidden></p>
+
+              <div class="table-card">
+                <div class="table-scroll">
+                  <table class="environment-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Ambiente</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Capacidade</th>
+                        <th scope="col">Localização</th>
+                        <th scope="col">Situação</th>
+                        <th scope="col"><span class="visually-hidden">Ações</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="environmentRows"></tbody>
+                  </table>
+                </div>
+                <p class="empty-state" id="environmentEmpty" hidden>Nenhum ambiente encontrado.</p>
+              </div>
+            </section>
+
+            <section class="view-panel management-view" id="view-cadastro-ambientes" data-view="cadastro-ambientes" hidden>
+              <header class="management-header management-header--form">
+                <div>
+                  <p class="eyebrow">Gerenciamento</p>
+                  <h1 class="page-title" id="environmentFormTitle">Cadastro de Ambientes</h1>
+                  <p class="management-description">Preencha as informações do ambiente acadêmico.</p>
+                </div>
+              </header>
+
+              <p class="inline-feedback form-feedback" id="formFeedback" role="status" aria-live="polite" hidden></p>
+
+              <form class="form-card" id="environmentForm" novalidate>
+                <input id="environmentId" name="id" type="hidden" />
+                <div class="form-grid">
+                  <div class="form-field form-field--wide">
+                    <label for="environmentName">Nome do ambiente <span aria-hidden="true">*</span></label>
+                    <input id="environmentName" name="name" type="text" maxlength="80" required autocomplete="off" />
+                    <small class="field-error" id="environmentNameError"></small>
+                  </div>
+                  <div class="form-field">
+                    <label for="environmentType">Tipo de ambiente <span aria-hidden="true">*</span></label>
+                    <select id="environmentType" name="type" required>
+                      <option value="">Selecione o tipo</option>
+                      <option value="Sala de aula">Sala de aula</option>
+                      <option value="Laboratório">Laboratório</option>
+                      <option value="Auditório">Auditório</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                    <small class="field-error" id="environmentTypeError"></small>
+                  </div>
+                  <div class="form-field">
+                    <label for="environmentCapacity">Capacidade de pessoas <span aria-hidden="true">*</span></label>
+                    <input id="environmentCapacity" name="capacity" type="number" min="1" max="10000" step="1" required inputmode="numeric" />
+                    <small class="field-error" id="environmentCapacityError"></small>
+                  </div>
+                  <div class="form-field form-field--wide">
+                    <label for="environmentLocation">Localização <span aria-hidden="true">*</span></label>
+                    <input id="environmentLocation" name="location" type="text" maxlength="120" required autocomplete="off" placeholder="Ex.: Bloco A, 2º andar" />
+                    <small class="field-error" id="environmentLocationError"></small>
+                  </div>
+                  <div class="form-field form-field--wide">
+                    <label for="environmentDescription">Descrição <span class="optional-label">(opcional)</span></label>
+                    <textarea id="environmentDescription" name="description" rows="4" maxlength="500" placeholder="Informações adicionais sobre o ambiente"></textarea>
+                    <small class="field-hint">Até 500 caracteres.</small>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <a class="button button--secondary" href="#consulta-ambientes" data-cancel-environment>Cancelar</a>
+                  <button class="button button--primary" id="saveEnvironment" type="submit">Salvar ambiente</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="view-panel management-view" id="view-gerenciamento-reservas" data-view="gerenciamento-reservas" hidden>
+              <header class="management-header">
+                <div>
+                  <p class="eyebrow">Gerenciamento</p>
+                  <h1 class="page-title">Gerenciamento de Reservas</h1>
+                  <p class="management-description">Consulte as solicitações e registre as decisões do gestor.</p>
+                </div>
+              </header>
+
+              <div class="reservation-toolbar">
+                <label class="status-filter" for="reservationStatusFilter">
+                  <span>Status da reserva</span>
+                  <select id="reservationStatusFilter">
+                    <option value="todas">Todos os status</option>
+                    <option value="solicitada">Solicitadas</option>
+                    <option value="aprovada">Aprovadas</option>
+                    <option value="rejeitada">Rejeitadas</option>
+                    <option value="cancelada">Canceladas</option>
+                  </select>
+                </label>
+                <span class="result-count" id="reservationCount" aria-live="polite"></span>
+              </div>
+
+              <p class="inline-feedback" id="reservationFeedback" role="status" aria-live="polite" hidden></p>
+
+              <div class="table-card">
+                <div class="table-scroll">
+                  <table class="environment-table reservation-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Professor solicitante</th>
+                        <th scope="col">Ambiente</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Horário</th>
+                        <th scope="col">Objetivo</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"><span class="visually-hidden">Ações</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="reservationRows"></tbody>
+                  </table>
+                </div>
+                <p class="empty-state" id="reservationEmpty" hidden>Nenhuma reserva encontrada para este status.</p>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <dialog class="reservation-dialog" id="reservationDetailsDialog" aria-labelledby="reservationDetailsTitle">
+      <div class="reservation-dialog__header">
+        <h2 id="reservationDetailsTitle">Detalhes da reserva</h2>
+        <button class="dialog-close" type="button" data-close-details aria-label="Fechar detalhes">×</button>
+      </div>
+      <dl class="reservation-details" id="reservationDetails"></dl>
+      <div class="reservation-dialog__actions" id="reservationDetailsActions"></div>
+    </dialog>
+
+    <dialog class="reservation-dialog" id="reservationRejectDialog" aria-labelledby="rejectReservationTitle">
+      <form class="reservation-dialog__form" id="rejectReservationForm" novalidate>
+        <div class="reservation-dialog__header">
+          <h2 id="rejectReservationTitle">Rejeitar reserva</h2>
+          <button class="dialog-close" type="button" data-close-rejection aria-label="Fechar rejeição">×</button>
+        </div>
+        <p class="management-description">Informe o motivo da rejeição para registrar a decisão.</p>
+        <label class="reason-field" for="rejectionReason">
+          Motivo da rejeição <span aria-hidden="true">*</span>
+          <textarea id="rejectionReason" name="reason" rows="4" maxlength="500" required aria-describedby="rejectionReasonError"></textarea>
+        </label>
+        <small class="field-error" id="rejectionReasonError"></small>
+        <p class="inline-feedback inline-feedback--error" id="rejectionDialogFeedback" role="alert" hidden></p>
+        <div class="reservation-dialog__actions">
+          <button class="button button--secondary" type="button" data-close-rejection>Cancelar</button>
+          <button class="button button--primary" type="submit">Confirmar rejeição</button>
+        </div>
+      </form>
+    </dialog>
+
+    <section class="professor-app" id="professorApp" hidden>
+      <header class="topbar">
+        <div class="topbar__inner professor-topbar">
+          <span class="professor-brand">Reservas Acadêmicas UniFil</span>
+          <button class="button button--secondary" type="button" data-logout>Sair</button>
+        </div>
+      </header>
+      <main class="professor-content">
+        <section class="professor-panel" id="professorHome">
+          <section class="professor-welcome" aria-labelledby="professorTitle">
+            <div>
+              <p class="eyebrow">Área do Professor</p>
+              <h1 class="page-title" id="professorTitle">Bem-vindo(a)</h1>
+              <p class="management-description">Você entrou na área inicial do Professor.</p>
+              <p class="professor-account" id="professorAccount"></p>
+            </div>
+            <a class="button button--primary" href="#solicitar-reserva" data-open-reservation>
+              Solicitar reserva
+            </a>
+          </section>
+
+          <section class="professor-requests" aria-labelledby="professorRequestsTitle">
+            <header class="professor-section-header">
+              <div>
+                <p class="eyebrow">Acompanhamento</p>
+                <h2 id="professorRequestsTitle">Minhas solicitações</h2>
+              </div>
+              <span class="result-count" id="professorReservationCount" aria-live="polite"></span>
+            </header>
+            <p class="inline-feedback" id="professorFeedback" role="status" aria-live="polite" hidden></p>
+            <div class="professor-reservation-list" id="professorReservations"></div>
+            <p class="empty-state professor-empty" id="professorReservationEmpty" hidden>
+              Você ainda não possui solicitações de reserva.
+            </p>
+          </section>
+        </section>
+
+        <section class="professor-panel professor-request-panel" id="professorRequestPanel" hidden>
+          <header class="management-header">
+            <div>
+              <p class="eyebrow">Área do Professor</p>
+              <h1 class="page-title">Solicitar reserva</h1>
+              <p class="management-description">Informe o ambiente, o período e o objetivo da reserva.</p>
+            </div>
+          </header>
+
+          <p class="inline-feedback form-feedback" id="professorFormFeedback" role="status" aria-live="polite" hidden></p>
+          <form class="form-card professor-request-form" id="professorReservationForm" novalidate>
+            <div class="form-grid">
+              <div class="form-field form-field--wide">
+                <label for="requestEnvironment">Ambiente disponível <span aria-hidden="true">*</span></label>
+                <select id="requestEnvironment" name="environmentId" required aria-describedby="requestEnvironmentError">
+                  <option value="">Selecione um ambiente</option>
+                </select>
+                <small class="field-error" id="requestEnvironmentError"></small>
+              </div>
+              <div class="form-field">
+                <label for="requestDate">Data da reserva <span aria-hidden="true">*</span></label>
+                <input id="requestDate" name="date" type="date" required aria-describedby="requestDateError" />
+                <small class="field-error" id="requestDateError"></small>
+              </div>
+              <div class="form-field">
+                <label for="requestStartTime">Horário de início <span aria-hidden="true">*</span></label>
+                <input id="requestStartTime" name="startTime" type="time" required aria-describedby="requestStartTimeError" />
+                <small class="field-error" id="requestStartTimeError"></small>
+              </div>
+              <div class="form-field">
+                <label for="requestEndTime">Horário de término <span aria-hidden="true">*</span></label>
+                <input id="requestEndTime" name="endTime" type="time" required aria-describedby="requestEndTimeError" />
+                <small class="field-error" id="requestEndTimeError"></small>
+              </div>
+              <div class="form-field form-field--wide">
+                <label for="requestObjective">Objetivo da reserva <span aria-hidden="true">*</span></label>
+                <textarea id="requestObjective" name="objective" rows="4" maxlength="500" required aria-describedby="requestObjectiveError"></textarea>
+                <small class="field-error" id="requestObjectiveError"></small>
+              </div>
+            </div>
+            <div class="form-actions">
+              <a class="button button--secondary" href="#professor" data-cancel-request>Cancelar</a>
+              <button class="button button--primary" type="submit">Enviar solicitação</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </section>
+  </body>
+</html>
